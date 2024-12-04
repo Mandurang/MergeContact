@@ -84,5 +84,31 @@ namespace MergeContactTest
             };
         }
 
+        [Fact]
+        public void MergeContacts_ShouldGroupSimilarContacts()
+        {
+            // Arrange
+            var contacts = new ContactsList
+            {
+                Items = new List<ContactModel>
+                {
+                    new ContactModel { Name = "John Doe", Phone = "12345", Email = "john@example.com" },
+                    new ContactModel { Name = "John Do", Phone = "12345", Email = "john.doe@example.com" },
+                    new ContactModel { Name = "Jon Doe", Phone = "123456", Email = "john@example.com" },
+                    new ContactModel { Name = "Jane Smith", Phone = "98765", Email = "jane@example.com" },
+                }
+            };
+
+            // Act
+            var result = MergeContacts(contacts) as OkObjectResult;
+            var mergedContacts = result.Value as List<ContactModel>;
+
+            // Assert
+            mergedContacts.Should().HaveCount(2); // John Doe и его дубликаты в одной группе, Jane Smith - отдельно
+            mergedContacts[0].Name.Should().Be("John Doe"); // Имя из первого контакта
+            mergedContacts[0].Email.Should().Contain("john@example.com");
+            mergedContacts[0].Email.Should().Contain("john.doe@example.com");
+        }
+
     }
 }

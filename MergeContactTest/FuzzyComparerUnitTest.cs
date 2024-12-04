@@ -38,6 +38,5 @@ namespace MergeContactTest
             // Assert
             result.Should().BeTrue();
         }
-
     }
 }

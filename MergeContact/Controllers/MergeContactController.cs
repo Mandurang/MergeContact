@@ -22,35 +22,41 @@ public class ContactsController : ControllerBase
         var mergedContacts = new List<ContactModel>();
         const int threshold = 80;
 
+        var visitedIndexes = new HashSet<int>();
+
         for (int i = 0; i < contacts.Items.Count; i++)
         {
+            if (visitedIndexes.Contains(i))
+                continue;
+
             var currentContact = contacts.Items[i];
             var duplicates = new List<ContactModel> { currentContact };
 
             for (int j = i + 1; j < contacts.Items.Count; j++)
             {
+                if (visitedIndexes.Contains(j))
+                    continue;
+
                 var comparisonContact = contacts.Items[j];
 
                 bool nameMatch = _fuzzyComparer.AreSimilar(currentContact.Name, comparisonContact.Name, threshold);
-
                 bool phoneMatch = ComparePhones(currentContact, comparisonContact, threshold);
-
                 bool emailMatch = CompareEmails(currentContact, comparisonContact, threshold);
 
                 if (nameMatch && (phoneMatch || emailMatch))
                 {
                     duplicates.Add(comparisonContact);
+                    visitedIndexes.Add(j);
                 }
             }
 
-            var mergedContact = duplicates.First();
+            
+            var mergedContact = MergeDuplicateContacts(duplicates);
             mergedContacts.Add(mergedContact);
 
-            foreach (var duplicate in duplicates.Skip(1))
-            {
-                contacts.Items.Remove(duplicate);
-            }
+            visitedIndexes.Add(i); 
         }
+
         return Ok(mergedContacts);
     }
 
