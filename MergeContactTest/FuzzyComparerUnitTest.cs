@@ -26,7 +26,6 @@ namespace MergeContactTest
             result.Should().BeFalse();
         }
 
-
         [Theory]
         [InlineData("hello", "helo", 80)]
         [InlineData("HELLO", "hello", 80)]

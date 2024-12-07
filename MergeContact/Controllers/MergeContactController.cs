@@ -50,17 +50,16 @@ public class ContactsController : ControllerBase
                 }
             }
 
-            
             var mergedContact = MergeDuplicateContacts(duplicates);
             mergedContacts.Add(mergedContact);
 
-            visitedIndexes.Add(i); 
+            visitedIndexes.Add(i);
         }
 
         return Ok(mergedContacts);
     }
 
-    private ContactModel MergeDuplicateContacts(List<ContactRequestDto> duplicates)
+    private ContactModel MergeDuplicateContacts(List<ContactModel> duplicates)
     {
         var baseContact = duplicates.First();
 
@@ -72,28 +71,13 @@ public class ContactsController : ControllerBase
             Phone = baseContact.Phone,
             Observations = string.Empty,
             ContactType_ID = baseContact.ContactType_ID,
-            /*Country = string.Empty,
-            State = string.Empty,
-            Town = string.Empty,
-            Neighborhood = string.Empty,
-            Zone = string.Empty,
-            SocialReason = string.Empty,
-            Nationality = string.Empty,
-            BirthDate = string.Empty,
-            NIF = string.Empty,
-            BI = string.Empty,
-            Job = string.Empty,
-            Notes = string.Empty,*/
         };
 
         foreach (var contact in duplicates.Skip(1))
         {
             mergedContact.Email = MergeUniqueValues(new[] { mergedContact.Email, contact.Email });
-
             mergedContact.Phone = MergeUniqueValues(new[] { mergedContact.Phone, contact.Phone });
-
             mergedContact.Observations += "; " + (contact.Name ?? "No Name");
-
             mergedContact.ContactType_ID = MergeUniqueValues(new[] { mergedContact.ContactType_ID, contact.ContactType_ID });
         }
 
@@ -136,22 +120,6 @@ public class ContactsController : ControllerBase
             )
         );
     }
-
-    //private bool ComparePhones(ContactModel contact1, ContactModel contact2, int threshold)
-    //{
-    //    var phones1 = new List<string> { contact1.Phone, contact1.Phone2, contact1.Phone3, contact1.Phone4 };
-    //    var phones2 = new List<string> { contact2.Phone, contact2.Phone2, contact2.Phone3, contact2.Phone4 };
-
-    //    return phones1.Any(phone1 => phones2.Any(phone2 => _fuzzyComparer.AreSimilar(phone1, phone2, threshold)));
-    //}
-
-    //private bool CompareEmails(ContactModel contact1, ContactModel contact2, int threshold)
-    //{
-    //    var emails1 = new List<string> { contact1.Email, contact1.Email2, contact1.Email3, contact1.Email4 };
-    //    var emails2 = new List<string> { contact2.Email, contact2.Email2, contact2.Email3, contact2.Email4 };
-
-    //    return emails1.Any(email1 => emails2.Any(email2 => _fuzzyComparer.AreSimilar(email1, email2, threshold)));
-    //}
 }
 
 

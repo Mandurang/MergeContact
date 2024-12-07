@@ -20,23 +20,5 @@
         public string? BI { get; set; }
         public string? Job { get; set; }
         public string? Notes { get; set; }
-
-        public ContactResult()
-        {
-        }
-
-        //public ContactResult(ContactRequestDto contactRequest, ContactResult contactResult)
-        //{
-        //    ContactId = contactRequest.Id;
-
-        //    if (contactResult.Count > 0)
-        //    {
-        //        Name = contactResult.Name;
-        //        Email = contactResult.Email;
-
-        //        Phone = contactResult.Phone;
-        //        Country = contactResult.Phone;
-        //    }
-        //}
     }
 }
